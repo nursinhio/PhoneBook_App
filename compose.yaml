@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: 'mongo:latest'
+    container_name: 'mongodb'
+    environment:
+      - 'MONGO_INITDB_ROOT_PASSWORD=rootpass'
+      - 'MONGO_INITDB_ROOT_USERNAME=rootuser'
+      - 'MONGO_INITDB_DATABASE=ph_db'
+    ports:
+      - '27017:27017'
