@@ -93,8 +93,8 @@ public class MainView extends VerticalLayout {
 
     private void generatePDFReport() {
         try {
-            List<Contact> contacts = contactService.findAll(); // Получаем список контактов
-            PDFGeneratorUtil.generatePDF(contacts, "contacts_report.pdf"); // Генерируем PDF
+            List<Contact> contacts = contactService.findAll();
+            PDFGeneratorUtil.generatePDF(contacts, "contacts_report.pdf"); //
             Notification.show("PDF Report generated successfully!", 3000, Notification.Position.MIDDLE);
         } catch (Exception e) {
             Notification.show("Error generating PDF report: " + e.getMessage(), 3000, Notification.Position.MIDDLE);
