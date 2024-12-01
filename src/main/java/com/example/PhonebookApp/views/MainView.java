@@ -4,15 +4,18 @@ import com.example.PhonebookApp.dto.ContactDTO;
 import com.example.PhonebookApp.mapper.ContactMapper;
 import com.example.PhonebookApp.model.Contact;
 import com.example.PhonebookApp.service.ContactService;
+import com.example.PhonebookApp.utils.PDFGeneratorUtil;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
 import org.springframework.beans.factory.annotation.Autowired;
+import java.util.List;
 
 @Route("")
 public class MainView extends VerticalLayout {
@@ -21,6 +24,7 @@ public class MainView extends VerticalLayout {
     private final ContactMapper contactMapper;
     private final Grid<Contact> contactGrid = new Grid<>(Contact.class);
     private final Button addContactButton = new Button(new Icon(VaadinIcon.PLUS));
+    private final Button printButton = new Button("Generate PDF");
 
     @Autowired
     public MainView(ContactService contactService, ContactMapper contactMapper) {
@@ -29,6 +33,7 @@ public class MainView extends VerticalLayout {
         configureGrid();
 
         configureAddButton();
+        configurePrintButton();
 
         add(contactGrid);
 
@@ -79,6 +84,21 @@ public class MainView extends VerticalLayout {
         confirmDialog.setConfirmButtonTheme("error");
 
         confirmDialog.open();
+    }
+
+    private void configurePrintButton() {
+        printButton.addClickListener(event -> generatePDFReport());
+        add(printButton);
+    }
+
+    private void generatePDFReport() {
+        try {
+            List<Contact> contacts = contactService.findAll(); // Получаем список контактов
+            PDFGeneratorUtil.generatePDF(contacts, "contacts_report.pdf"); // Генерируем PDF
+            Notification.show("PDF Report generated successfully!", 3000, Notification.Position.MIDDLE);
+        } catch (Exception e) {
+            Notification.show("Error generating PDF report: " + e.getMessage(), 3000, Notification.Position.MIDDLE);
+        }
     }
 
     public void refreshGrid() {
